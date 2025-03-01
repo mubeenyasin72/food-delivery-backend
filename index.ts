@@ -51,7 +51,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     }
   }
 });
-
+//App Listen
 app.listen(port, () => {
   console.clear();
   console.log(`Food Delivery Server is running on port ${port}`);
