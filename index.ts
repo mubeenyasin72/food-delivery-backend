@@ -2,14 +2,14 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { AdminRoute, VandorRoute } from "./routes";
-import { ApiError, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "./utility";
+import { ApiError,INTERNAL_SERVER_ERROR, BAD_REQUEST  } from "./utility";
 
 const app = express();
 const port = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }))
 
 //Routes
 app.use("/api/v1/admin", AdminRoute);
@@ -28,11 +28,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
       },
     });
   } else {
+    // Handle generic errors
     const status = (err as any).status || INTERNAL_SERVER_ERROR;
-    const message =
-      status >= BAD_REQUEST && status < INTERNAL_SERVER_ERROR
-        ? err.message || "Client Error"
-        : "Internal Server Error";
+    const message = status >= BAD_REQUEST && status < INTERNAL_SERVER_ERROR ? err.message || "Client Error" : "Internal Server Error";
 
     // Customize response based on environment
     if (process.env.NODE_ENV === "development") {
@@ -51,8 +49,8 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     }
   }
 });
-//App Listen
+
 app.listen(port, () => {
-  console.clear();
+  console.clear()
   console.log(`Food Delivery Server is running on port ${port}`);
 });
