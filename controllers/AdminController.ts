@@ -3,7 +3,7 @@ import { CreateVandorInput } from "../dto";
 import { Vandor } from "../models";
 import { ApiError, ApiResponse, asyncHandler, CREATED } from "../utility";
 
-//CreateVandor
+//CreateVandor Controller
 export const CreateVandor = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const {
