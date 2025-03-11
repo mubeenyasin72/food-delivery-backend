@@ -2,10 +2,11 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { AdminRoute, VandorRoute } from "./routes";
-import { ApiError,INTERNAL_SERVER_ERROR, BAD_REQUEST  } from "./utility";
+import { ApiError, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "./utility";
+require("dotenv").config({ path: "./config/config.env" });
 
 const app = express();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || process.env.PORT_NUMBER;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -28,7 +29,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
       },
     });
   } else {
-    // Handle generic errors
+    // Error Handler
     const status = (err as any).status || INTERNAL_SERVER_ERROR;
     const message = status >= BAD_REQUEST && status < INTERNAL_SERVER_ERROR ? err.message || "Client Error" : "Internal Server Error";
 
