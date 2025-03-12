@@ -8,8 +8,8 @@ logs/
 # Ignore images folder
 images/
 
-# Ignore config folder
-config/
+# Ignore only config.env in the config folder
+config/config.env
 
 # Ignore system files
 .DS_Store
