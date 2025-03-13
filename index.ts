@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import { AdminRoute, VandorRoute } from "./routes";
 import { ApiError, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "./utility";
 require("dotenv").config({ path: "./config/config.env" });
-
+import {createDatabaseConnection} from "./config"
 const app = express();
 const port = process.env.PORT || process.env.PORT_NUMBER;
 
@@ -15,6 +15,9 @@ app.use(bodyParser.urlencoded({ extended: true }))
 //Routes
 app.use("/api/v1/admin", AdminRoute);
 app.use("/api/v1/vandor", VandorRoute);
+
+// Database Connection
+createDatabaseConnection();
 
 // Global Error Handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
