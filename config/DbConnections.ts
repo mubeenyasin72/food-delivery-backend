@@ -13,9 +13,11 @@ export const createDatabaseConnection = () => {
     maxPoolSize: 10,
   };
   mongoose.connect(mongoUri, options).then((res) => {
-    console.log(`Connected with ${res.connection.name}`);
-  }).catch((error: MongooseError) => {
-    throw new ApiError(INTERNAL_SERVER_ERROR, error.message);
+    console.log(`Connected with ${res.connection.name} database`);
+  }).catch((err: MongooseError) => {
+    console.log(
+        `> Error while connecting to MongoDB: ${err.message}`
+      )
   }
   );
 
