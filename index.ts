@@ -40,7 +40,6 @@ app.use((req: Request, res: Response) => {
 
 // Global Error Handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
 
   if (err instanceof ApiError) {
     const { statusCode, message, error } = err;
