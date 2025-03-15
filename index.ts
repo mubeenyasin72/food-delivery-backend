@@ -50,7 +50,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
       },
     });
   } else {
-    // Error Handler
     const status = (err as any).status || INTERNAL_SERVER_ERROR;
     const message =
       status >= BAD_REQUEST && status < INTERNAL_SERVER_ERROR
