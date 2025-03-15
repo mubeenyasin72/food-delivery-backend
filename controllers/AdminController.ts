@@ -10,6 +10,7 @@ import {
   BAD_REQUEST,
 } from "../utility";
 import { GenerateSalt, EncryptPassword } from "../utility";
+
 //CreateVandor
 export const CreateVandor = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
