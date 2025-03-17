@@ -8,8 +8,20 @@ import {
   CREATED,
   OK,
   BAD_REQUEST,
+  NOT_FOUND,
 } from "../utility";
 import { GenerateSalt, EncryptPassword } from "../utility";
+import { isValidObjectId } from "mongoose";
+
+export const FindVander = async (id?: string, email?: string) => {
+  if (email) {
+    return await Vandor.findOne({ email });
+  }
+  if (id && isValidObjectId(id)) {
+    return await Vandor.findById(id);
+  }
+  return null; 
+};
 
 //CreateVandor
 export const CreateVandor = asyncHandler(
@@ -25,14 +37,13 @@ export const CreateVandor = asyncHandler(
       phone,
     } = <CreateVandorInput>req.body;
 
-    const existingVandor = await Vandor.findOne({ email: email });
+    const existingVandor = await FindVander(email);
     if (existingVandor) {
       throw new ApiError(BAD_REQUEST, "Vendor already exists");
     }
 
     const salt = await GenerateSalt();
     const userPassword = await EncryptPassword(password, salt);
-
 
     const createdVandor = await Vandor.create({
       name: name,
@@ -60,9 +71,12 @@ export const CreateVandor = asyncHandler(
 export const GetVandors = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const vandors = await Vandor.find();
-    return res
-      .status(OK)
-      .json(new ApiResponse(OK, vandors, "Vandors fetched successfully"));
+    if (vandors !== null) {
+      return res
+        .status(OK)
+        .json(new ApiResponse(OK, vandors, "Vandors fetched successfully"));
+    }
+    return res.json(new ApiResponse(OK, [], "No vandors found"));
   }
 );
 
@@ -70,9 +84,10 @@ export const GetVandors = asyncHandler(
 export const GetVandorById = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const vandor = await Vandor.findById(id);
+    
+    const vandor = await FindVander(id);
     if (!vandor) {
-      throw new ApiError(404, "Vendor not found");
+      throw new ApiError(NOT_FOUND, "Vendor not found");
     }
     return res
       .status(OK)
