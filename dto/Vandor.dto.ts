@@ -8,3 +8,8 @@ export interface CreateVandorInput{
     email: string;
     password: string;
 } 
+
+export interface VandorLoginInput{
+    email: string;
+    password: string;
+}

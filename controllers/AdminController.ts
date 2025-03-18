@@ -13,14 +13,15 @@ import {
 import { GenerateSalt, EncryptPassword } from "../utility";
 import { isValidObjectId } from "mongoose";
 
-export const FindVander = async (id?: string, email?: string) => {
+//Helper Function
+export const FindVandor = async (id?: string, email?: string) => {
   if (email) {
     return await Vandor.findOne({ email });
   }
   if (id && isValidObjectId(id)) {
     return await Vandor.findById(id);
   }
-  return null; 
+  return null;
 };
 
 //CreateVandor
@@ -37,7 +38,7 @@ export const CreateVandor = asyncHandler(
       phone,
     } = <CreateVandorInput>req.body;
 
-    const existingVandor = await FindVander(email);
+    const existingVandor = await FindVandor("", email);
     if (existingVandor) {
       throw new ApiError(BAD_REQUEST, "Vendor already exists");
     }
@@ -67,7 +68,7 @@ export const CreateVandor = asyncHandler(
   }
 );
 
-//Get All vanders
+//Get All vandors
 export const GetVandors = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const vandors = await Vandor.find();
@@ -80,12 +81,12 @@ export const GetVandors = asyncHandler(
   }
 );
 
-// Get Single vander
+// Get Single vandor
 export const GetVandorById = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    
-    const vandor = await FindVander(id);
+
+    const vandor = await FindVandor(id);
     if (!vandor) {
       throw new ApiError(NOT_FOUND, "Vendor not found");
     }
