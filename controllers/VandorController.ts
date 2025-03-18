@@ -37,3 +37,15 @@ export const VandorLogin = asyncHandler(
     throw new ApiError(NOT_FOUND, "Vendor not found");
   }
 );
+//profle
+export const GetVandorProfile = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {}
+);
+//update profile
+export const UpdateVandorProfile = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {}
+);
+//update service
+export const UpdateVandorService = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {}
+);
