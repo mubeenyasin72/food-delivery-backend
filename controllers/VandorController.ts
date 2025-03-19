@@ -10,6 +10,7 @@ import {
   BAD_REQUEST,
   NOT_FOUND,
   ComparePassword,
+  GenerateSignature,
 } from "../utility";
 import { FindVandor } from "./AdminController";
 
@@ -27,9 +28,15 @@ export const VandorLogin = asyncHandler(
         existingVandor.salt
       );
       if (validatePassword) {
+        const signature = GenerateSignature({
+          _id: existingVandor.id,
+          name: existingVandor.name,
+          email: existingVandor.email,
+          foodTypes: existingVandor.foodType,
+        })
         return res
           .status(OK)
-          .json(new ApiResponse(OK, existingVandor, "Login Successful"));
+          .json(new ApiResponse(OK, signature, "Login Successful"));
       } else {
         throw new ApiError(BAD_REQUEST, "Invalid Password");
       }
@@ -39,13 +46,19 @@ export const VandorLogin = asyncHandler(
 );
 //profle
 export const GetVandorProfile = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {}
+  async (req: Request, res: Response, next: NextFunction) => {
+
+  }
 );
 //update profile
 export const UpdateVandorProfile = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {}
+  async (req: Request, res: Response, next: NextFunction) => {
+
+  }
 );
 //update service
 export const UpdateVandorService = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {}
+  async (req: Request, res: Response, next: NextFunction) => {
+
+  }
 );
