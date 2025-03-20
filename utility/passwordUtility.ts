@@ -28,6 +28,7 @@ export const GenerateSignature = (payload: VandorPayload) => {
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' });
 };
 
+//JWT Token Validation Function
 export const ValidateSignature = async (req: Request) => {
 
   const signature = req.get('Authorization');
