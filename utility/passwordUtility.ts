@@ -39,6 +39,7 @@ export const ValidateSignature = async (req: Request) => {
         throw new ApiError(NOT_FOUND, "JWT_SECRET is not defined in environment variables");
       }
       const payload = await jwt.verify(signature.split(' ')[1], process.env.JWT_SECRET) as AuthPayload;
+//Property 'user' does not exist on type 'Request<ParamsDictionary,
       req.user = payload;
       return true;
     } catch (error) {
