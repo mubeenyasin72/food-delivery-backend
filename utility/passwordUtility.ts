@@ -29,8 +29,7 @@ export const GenerateSignature = (payload: VandorPayload) => {
 };
 
 //JWT Token Validation Function
-export const ValidateSignature = async (req: Request) => {
-
+export const ValidateSignature = async (req: Request & { user?: AuthPayload }) => {
   const signature = req.get('Authorization');
 
   if (signature) {
@@ -39,12 +38,11 @@ export const ValidateSignature = async (req: Request) => {
         throw new ApiError(NOT_FOUND, "JWT_SECRET is not defined in environment variables");
       }
       const payload = await jwt.verify(signature.split(' ')[1], process.env.JWT_SECRET) as AuthPayload;
-      //Property 'user' does not exist 
       req.user = payload;
       return true;
     } catch (error) {
-      return false
+      return false;
     }
   }
   return false;
-}
+};

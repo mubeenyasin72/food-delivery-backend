@@ -47,7 +47,14 @@ export const VandorLogin = asyncHandler(
 //profle
 export const GetVandorProfile = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-
+    const user = req.user;
+    if (user) {
+      const vandor = await Vandor.findById(user._id);
+      if (vandor) {
+        return res.status(OK).json(new ApiResponse(OK, vandor, "Vandor Profile"));
+      }
+      throw new ApiError(NOT_FOUND, "Vandor not found");
+    }
   }
 );
 //update profile
