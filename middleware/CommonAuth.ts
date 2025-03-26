@@ -16,7 +16,6 @@ export const Authenticate = async (req: Request, res: Response, next: NextFuncti
     if (validate) {
         next();
     } else { 
-        console.log("else part is running")
         res.status(UNAUTHORIZED).json(new ApiError(UNAUTHORIZED, "Unauthorized"));
     }
 }
