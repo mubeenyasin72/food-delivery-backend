@@ -12,10 +12,12 @@ declare global {
 }
 
 export const Authenticate = async (req: Request, res: Response, next: NextFunction) => {
-    const validate = await ValidateSignature(req);
+  const validate = await ValidateSignature(req);
+  console.log(validate)
     if (validate) {
         next();
     } else { 
+        console.log("else part is running")
         res.status(UNAUTHORIZED).json(new ApiError(UNAUTHORIZED, "Unauthorized"));
     }
 }
