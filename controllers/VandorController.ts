@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { VandorLoginInput } from "../dto";
+import { EditVandorInput, VandorLoginInput } from "../dto";
 import { Vandor } from "../models";
 import {
   ApiError,
@@ -60,12 +60,44 @@ export const GetVandorProfile = asyncHandler(
 //update profile
 export const UpdateVandorProfile = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-
+    const { name, phone, address, foodType } = <EditVandorInput>req.body;
+    const user = req.user;
+    if (user) {
+      const existingVandor = await FindVandor(user._id);
+      if (existingVandor) {
+        const updatedVandor = await Vandor.findByIdAndUpdate(
+          user._id,
+          {
+            name,
+            phone,
+            address,
+            foodType,
+          },
+          { new: true }
+        );
+        return res
+          .status(OK)
+          .json(new ApiResponse(OK, updatedVandor, "Vandor Profile Updated"));
+      }
+      throw new ApiError(NOT_FOUND, "Vandor not found");
+    }
+    throw new ApiError(BAD_REQUEST, "User not found");
   }
 );
 //update service
 export const UpdateVandorService = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-
+    const user = req.user;
+    if (user) {
+      const existingVandor = await FindVandor(user._id);
+      if (existingVandor != null) {
+        existingVandor.serviceAvailable = !existingVandor.serviceAvailable;
+        const savedVandor = await existingVandor.save();
+        return res
+          .status(OK)
+          .json(new ApiResponse(OK, savedVandor, "Vandor Profile Updated"));
+      }
+      throw new ApiError(NOT_FOUND, "Vandor not found");
+    }
   }
 );

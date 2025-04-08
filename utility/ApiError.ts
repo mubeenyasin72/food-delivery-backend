@@ -12,12 +12,4 @@ export class ApiError extends Error {
             Error.captureStackTrace(this, this.constructor);
         }
     }
-    // Define how the object should be serialized to JSON
-    toJSON() {
-        return {
-            statusCode: this.statusCode,
-            message: this.message,
-            error: this.error
-        };
-    }
 }
