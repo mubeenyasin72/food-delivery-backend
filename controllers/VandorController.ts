@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { EditVandorInput, VandorLoginInput } from "../dto";
-import { Vandor } from "../models";
+import { CreateFoodInput, EditVandorInput, VandorLoginInput } from "../dto";
+import { Vandor, Food } from "../models";
 import {
   ApiError,
   ApiResponse,
@@ -12,7 +12,7 @@ import {
   ComparePassword,
   GenerateSignature,
 } from "../utility";
-import { FindVandor } from "./AdminController";
+import { FindVandor } from "../helper";
 
 //login
 export const VandorLogin = asyncHandler(
@@ -33,7 +33,7 @@ export const VandorLogin = asyncHandler(
           name: existingVandor.name,
           email: existingVandor.email,
           foodTypes: existingVandor.foodType,
-        })
+        });
         return res
           .status(OK)
           .json(new ApiResponse(OK, signature, "Login Successful"));
@@ -51,7 +51,9 @@ export const GetVandorProfile = asyncHandler(
     if (user) {
       const vandor = await Vandor.findById(user._id);
       if (vandor) {
-        return res.status(OK).json(new ApiResponse(OK, vandor, "Vandor Profile"));
+        return res
+          .status(OK)
+          .json(new ApiResponse(OK, vandor, "Vandor Profile"));
       }
       throw new ApiError(NOT_FOUND, "Vandor not found");
     }
@@ -99,5 +101,52 @@ export const UpdateVandorService = asyncHandler(
       }
       throw new ApiError(NOT_FOUND, "Vandor not found");
     }
+  }
+);
+//Add Food Controller
+export const AddFood = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    if (user) {
+      const { name, description, price, foodType, readyTime, category } = <CreateFoodInput>req.body;
+      const vandor = await FindVandor(user._id);
+      if (vandor != null) {
+        const food = await Food.create({
+          vandorId: user._id,
+          name: name,
+          description: description,
+          category: category,
+          foodType: foodType,
+          images: ["mock.jpg"],
+          readyTime: readyTime,
+          price: price,
+          rating: 0,
+        });
+        vandor.foods.push(food._id);
+        await vandor.save();
+        return res
+          .status(CREATED)
+          .json(new ApiResponse(CREATED, vandor, "Food Created Successfully"));
+      }
+
+    }
+    throw new ApiError(BAD_REQUEST, "someting went wrong with add food");
+  }
+);
+
+//Get Food Controller
+export const GetFood = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    if (user) {
+      const food = await Food.find({ vandorId: user._id })
+      if (food !== null) {
+        return res
+          .status(OK)
+          .json(new ApiResponse(OK, food, "Food fetched successfully"));
+      }
+      return res.json(new ApiResponse(OK, [], "No food found"));
+    }
+    throw new ApiError(BAD_REQUEST, "food information not found");
   }
 );

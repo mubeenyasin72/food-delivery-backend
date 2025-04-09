@@ -12,17 +12,9 @@ import {
 } from "../utility";
 import { GenerateSalt, EncryptPassword } from "../utility";
 import { isValidObjectId } from "mongoose";
+import { FindVandor } from "../helper";
 
 //Helper Function
-export const FindVandor = async (id?: string, email?: string) => {
-  if (email) {
-    return await Vandor.findOne({ email });
-  }
-  if (id && isValidObjectId(id)) {
-    return await Vandor.findById(id);
-  }
-  return null;
-};
 
 //CreateVandor
 export const CreateVandor = asyncHandler(
@@ -59,6 +51,7 @@ export const CreateVandor = asyncHandler(
       rating: 0,
       serviceAvailable: false,
       coverImages: [],
+      foods: [],
     });
     return res
       .status(CREATED)
