@@ -86,6 +86,25 @@ export const UpdateVandorProfile = asyncHandler(
     throw new ApiError(BAD_REQUEST, "User not found");
   }
 );
+//Update Vandor profile image
+export const UpdateVandorCoverImage = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    if (user) {
+      const existingVandor = await FindVandor(user._id);
+      if (existingVandor) {
+        const file = req.files as [Express.Multer.File];
+        const images = file.map((file: Express.Multer.File) => file.filename);
+        existingVandor.coverImages.push(...images);
+        return res
+          .status(OK)
+          .json(new ApiResponse(OK, existingVandor, "Vandor Profile Updated"));
+      }
+      throw new ApiError(NOT_FOUND, "Vandor not found");
+    }
+    throw new ApiError(BAD_REQUEST, "User not found");
+  }
+);
 //update service
 export const UpdateVandorService = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -111,13 +130,15 @@ export const AddFood = asyncHandler(
       const { name, description, price, foodType, readyTime, category } = <CreateFoodInput>req.body;
       const vandor = await FindVandor(user._id);
       if (vandor != null) {
+        const file = req.files as [Express.Multer.File];
+        const images = file.map((file: Express.Multer.File) => file.filename);
         const food = await Food.create({
           vandorId: user._id,
           name: name,
           description: description,
           category: category,
           foodType: foodType,
-          images: ["mock.jpg"],
+          images: images,
           readyTime: readyTime,
           price: price,
           rating: 0,

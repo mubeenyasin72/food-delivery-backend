@@ -11,12 +11,14 @@ import {
 } from "./utility";
 require("dotenv").config({ path: "./config/config.env" });
 import { createDatabaseConnection } from "./config";
+import path from "path";
 const app = express();
 const port = process.env.PORT || process.env.PORT_NUMBER;
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 // Database Connection
 createDatabaseConnection();
