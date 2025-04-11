@@ -2,7 +2,7 @@ import mongoose, { ConnectOptions, MongooseError } from "mongoose";
 import { ApiError } from "../utility";
 import { INTERNAL_SERVER_ERROR } from "../utility";
 
-export const createDatabaseConnection = () => {
+export const createDatabaseConnection = async () => {
   const mongoUri = process.env.MONGO_URI;
   if (!mongoUri) {
     throw new ApiError(INTERNAL_SERVER_ERROR, 'MONGO_URI environment variable is not defined');
@@ -12,12 +12,13 @@ export const createDatabaseConnection = () => {
     connectTimeoutMS: 10000,
     maxPoolSize: 10,
   };
-  mongoose.connect(mongoUri, options).then((res) => {
+  await mongoose.connect(mongoUri, options).then((res) => {
     console.log(`Connected with ${res.connection.name} database`);
   }).catch((err: MongooseError) => {
     console.log(
-        `> Error while connecting to MongoDB: ${err.message}`
-      )
+      `> Error while connecting to MongoDB: ${err.message}`
+    )
+    process.exit(1);
   }
   );
 
