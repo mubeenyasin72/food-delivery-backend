@@ -11,6 +11,7 @@ import {
   NOT_FOUND,
   ComparePassword,
   GenerateSignature,
+  UNAUTHORIZED,
 } from "../utility";
 import { FindVandor } from "../helper";
 
@@ -64,6 +65,7 @@ export const UpdateVandorProfile = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { name, phone, address, foodType } = <EditVandorInput>req.body;
     const user = req.user;
+    if (!user) throw new ApiError(BAD_REQUEST, "User not found");
     if (user) {
       const existingVandor = await FindVandor(user._id);
       if (existingVandor) {
@@ -107,19 +109,20 @@ export const UpdateVandorCoverImage = asyncHandler(
 );
 //update service
 export const UpdateVandorService = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const user = req.user;
-    if (user) {
-      const existingVandor = await FindVandor(user._id);
-      if (existingVandor != null) {
-        existingVandor.serviceAvailable = !existingVandor.serviceAvailable;
-        const savedVandor = await existingVandor.save();
-        return res
-          .status(OK)
-          .json(new ApiResponse(OK, savedVandor, "Vandor Profile Updated"));
-      }
-      throw new ApiError(NOT_FOUND, "Vandor not found");
+    if (!user) {
+      throw new ApiError(UNAUTHORIZED, "User not authenticated");
     }
+    const vendor = await FindVandor(user._id);
+    if (!vendor) {
+      throw new ApiError(NOT_FOUND, "Vendor not found");
+    }
+    vendor.serviceAvailable = !vendor.serviceAvailable;
+    const savedVendor = await vendor.save();
+    res.status(OK).json(
+      new ApiResponse(OK, savedVendor, "Vendor service status updated")
+    );
   }
 );
 //Add Food Controller
