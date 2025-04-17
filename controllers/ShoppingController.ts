@@ -49,11 +49,27 @@ export const GetFoodIn30Min = asyncHandler(
 )
 export const SearchFood = asyncHandler(
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        const { pincode } = req.params;
+        const result = await Vandor.find({ pinCode: pincode, serviceAvailable: true })
+            .populate("foods")
+        if (result.length > 0) {
+            let foodResult: any = [];
+            result.map((item)=>foodResult.push(...item.foods))
+            res.status(OK).json(new ApiResponse(OK, foodResult, "Food Available in 30 Minutes"));
+            return;
+        }
+        res.status(NOT_FOUND).json(new ApiResponse(NOT_FOUND, [], "No Food Available in 30 Minutes"));
 
     }
 )
 export const GetRestaurantById = asyncHandler(
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-
+        const { id } = req.params;
+        const result = await Vandor.findById(id).populate("foods")
+        if (result) {
+            res.status(OK).json(new ApiResponse(OK, result, "Restaurant Found"));
+            return;
+        }
+        res.status(NOT_FOUND).json(new ApiResponse(NOT_FOUND, [], "No Restaurant Found"));
     }
 )
