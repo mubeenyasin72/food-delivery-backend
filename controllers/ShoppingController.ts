@@ -3,7 +3,7 @@ import { asyncHandler, ApiResponse, ApiError, BAD_REQUEST, INTERNAL_SERVER_ERROR
 import { Food, FoodDoc, Vandor } from '../models';
 
 
-
+//Get Food Availability
 export const GetFoodAvailability = asyncHandler(
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         const { pincode } = req.params;
@@ -17,6 +17,7 @@ export const GetFoodAvailability = asyncHandler(
         res.status(NOT_FOUND).json(new ApiResponse(NOT_FOUND, [], "No Food Available"));
     }
 )
+//Get Top Restaurants
 export const GetTopRestaurants = asyncHandler(
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         const pincode = req.params.pincode;
@@ -30,6 +31,7 @@ export const GetTopRestaurants = asyncHandler(
         res.status(NOT_FOUND).json(new ApiResponse(NOT_FOUND, [], "No Restaurants Found"));
     }
 )
+//Get Food In 30 Min
 export const GetFoodIn30Min = asyncHandler(
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         const pincode = req.params.pincode;
@@ -47,6 +49,7 @@ export const GetFoodIn30Min = asyncHandler(
         res.status(NOT_FOUND).json(new ApiResponse(NOT_FOUND, [], "No Food Available in 30 Minutes"));
     }
 )
+//Search Food
 export const SearchFood = asyncHandler(
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         const { pincode } = req.params;
@@ -62,6 +65,7 @@ export const SearchFood = asyncHandler(
 
     }
 )
+//Get Restaurant By Id
 export const GetRestaurantById = asyncHandler(
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         const { id } = req.params;
