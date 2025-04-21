@@ -65,7 +65,7 @@ export const SearchFood = asyncHandler(
 
     }
 )
-//Get Restaurant By Id
+//Get Single Restaurant
 export const GetRestaurantById = asyncHandler(
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         const { id } = req.params;
