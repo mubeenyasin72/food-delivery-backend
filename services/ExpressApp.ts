@@ -17,7 +17,7 @@ export default async (app: Application) => {
     app.use("/api/v1/admin", AdminRoute);
     app.use("/api/v1/vandor", VandorRoute);
     app.use("/api/v1/shopping", ShoppingRoute);
-    app.use("/api/v1/user",UserRoutes)
+    app.use("/api/v1/user", UserRoutes)
     // Handle 404 errors
     app.use((req: Request, res: Response) => {
         res
