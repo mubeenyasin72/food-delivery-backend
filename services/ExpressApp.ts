@@ -1,7 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import { AdminRoute, VandorRoute, ShoppingRoute } from "../routes";
+import { AdminRoute, VandorRoute, ShoppingRoute, UserRoutes } from "../routes";
 import { ApiError, INTERNAL_SERVER_ERROR, BAD_REQUEST, NOT_FOUND, ApiResponse } from "../utility";
 import path from "path";
 
@@ -17,7 +17,7 @@ export default async (app: Application) => {
     app.use("/api/v1/admin", AdminRoute);
     app.use("/api/v1/vandor", VandorRoute);
     app.use("/api/v1/shopping", ShoppingRoute);
-
+    app.use("/api/v1/user",UserRoutes)
     // Handle 404 errors
     app.use((req: Request, res: Response) => {
         res
