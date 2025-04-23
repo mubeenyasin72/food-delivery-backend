@@ -7,10 +7,14 @@ import {
     OK,
     BAD_REQUEST,
     NOT_FOUND,
+    GenerateSalt,
+    EncryptPassword,
+    GenerateOtp
 } from "../utility";
 import { plainToClass } from "class-transformer"
 import { validate } from "class-validator";
-import { CreateUserInput } from "../dto/User.dto";
+import { CreateUserInput } from "../dto";
+import { User } from "../models";
 
 
 export const UserSignUp = asyncHandler(
@@ -18,11 +22,37 @@ export const UserSignUp = asyncHandler(
         const userInputs = plainToClass(CreateUserInput, req.body);
         const inputError = await validate(userInputs, { validationError: { target: true } })
 
-        if(inputError.length > 0) {
+        if (inputError.length > 0) {
             throw next(new ApiError(BAD_REQUEST, "Validation Error", inputError))
         }
 
-        const {email, phone, password } = userInputs;
+        const { email, phone, password } = userInputs;
+        const salt = await GenerateSalt();
+        const userPassword = await EncryptPassword(password, salt);
+
+        const { otp, otp_expiry } = GenerateOtp();
+
+        // const result = await User.create( {
+        //     email: email,
+        //     password: userPassword,
+        //     salt: salt,
+        //     phone: phone,
+        //     otp: otp,
+        //     otp_expiry: otp_expiry,
+        //     firstName:"",
+        //     lastName:"",
+        //     address: "",
+        //     verified: false,
+        //     lat: 0,
+        //     lng:0
+        // })
+        // if (result) {
+        //     // send the opt to user
+
+        //     // generate the signature
+
+        //     //send the result to user
+        // }
     })
 
 export const UserSignIn = asyncHandler(
