@@ -27,7 +27,7 @@ const transport = nodemailer.createTransport({
     },
   } as SMTPTransport.Options); // <-- cast it here
 
-  await transport.sendMail({
+  const res = await transport.sendMail({
     from: process.env.MAIL_USER,
     to: email,
     subject,

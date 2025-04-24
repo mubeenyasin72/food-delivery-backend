@@ -50,7 +50,7 @@ export const UserSignUp = asyncHandler(
         })
         if (result) {
             // send the opt to user
-            await SendEmailOtp(email, "Verify your account", `
+            await SendEmailOtp(result.email, "Verify your account", `
             <h1>Verify your account</h1>
             <p>Use the following OTP to verify your account</p>
             <h2>${otp}</h2>
@@ -58,11 +58,18 @@ export const UserSignUp = asyncHandler(
             `)
             // generate the signature
             const signature = GenerateSignature({
-                _id: result._id,
+                _id: result.id,
                 email: result.email,
                 verified: result.verified,
             })
             //send the result to user
+            res.status(CREATED).json(
+                new ApiResponse(CREATED, {
+                    signature: signature,
+                    email: result.email,
+                    verified: result.verified,
+                }, "User Created",)
+            )
         }
     })
 
