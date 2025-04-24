@@ -21,7 +21,7 @@ export const ComparePassword = async (
   return (await EncryptPassword(enteredPassword, salt)) === savedPassword;
 };
 
-export const GenerateSignature = (payload: VandorPayload) => {
+export const GenerateSignature = (payload: AuthPayload) => {
   if (!process.env.JWT_SECRET) {
     throw new ApiError(NOT_FOUND, "JWT_SECRET is not defined in environment variables");
   }

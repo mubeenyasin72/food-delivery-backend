@@ -9,7 +9,9 @@ import {
     NOT_FOUND,
     GenerateSalt,
     EncryptPassword,
-    GenerateOtp
+    GenerateOtp,
+    SendEmailOtp,
+    GenerateSignature
 } from "../utility";
 import { plainToClass } from "class-transformer"
 import { validate } from "class-validator";
@@ -32,27 +34,36 @@ export const UserSignUp = asyncHandler(
 
         const { otp, otp_expiry } = GenerateOtp();
 
-        // const result = await User.create( {
-        //     email: email,
-        //     password: userPassword,
-        //     salt: salt,
-        //     phone: phone,
-        //     otp: otp,
-        //     otp_expiry: otp_expiry,
-        //     firstName:"",
-        //     lastName:"",
-        //     address: "",
-        //     verified: false,
-        //     lat: 0,
-        //     lng:0
-        // })
-        // if (result) {
-        //     // send the opt to user
-
-        //     // generate the signature
-
-        //     //send the result to user
-        // }
+        const result = await User.create({
+            email: email,
+            password: userPassword,
+            salt: salt,
+            phone: phone,
+            otp: otp,
+            otp_expiry: otp_expiry,
+            firstName: "",
+            lastName: "",
+            address: "",
+            verified: false,
+            lat: 0,
+            lng: 0
+        })
+        if (result) {
+            // send the opt to user
+            await SendEmailOtp(email, "Verify your account", `
+            <h1>Verify your account</h1>
+            <p>Use the following OTP to verify your account</p>
+            <h2>${otp}</h2>
+            <p>OTP is valid for 30 minutes</p>
+            `)
+            // generate the signature
+            const signature = GenerateSignature({
+                _id: result._id,
+                email: result.email,
+                verified: result.verified,
+            })
+            //send the result to user
+        }
     })
 
 export const UserSignIn = asyncHandler(

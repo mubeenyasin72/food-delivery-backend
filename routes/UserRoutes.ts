@@ -7,7 +7,6 @@ import {
     GetUserProfile,
     UpdateUserProfile
 } from "../controllers";
-import { Authenticate } from "../middleware";
 
 const router = express.Router();
 

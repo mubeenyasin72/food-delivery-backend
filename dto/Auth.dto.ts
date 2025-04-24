@@ -1,3 +1,4 @@
 import { VandorPayload } from "./Vandor.dto"
+import { UserPayload } from "./User.dto"
 
-export type AuthPayload = VandorPayload; 
+export type AuthPayload = VandorPayload | UserPayload; 

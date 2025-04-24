@@ -17,7 +17,7 @@ export const GenerateOtp = () => {
     };
 }
 
-export const SendEmail = async (email: string, subject: string, text: string) => {
+export const SendEmailOtp = async (email: string, subject: string, text: string) => {
 const transport = nodemailer.createTransport({
     host: process.env.MAIL_HOST,
     port: Number(process.env.MAIL_PORT),
@@ -31,6 +31,7 @@ const transport = nodemailer.createTransport({
     from: process.env.MAIL_USER,
     to: email,
     subject,
+    // text,
     html: text,
   });
 }
