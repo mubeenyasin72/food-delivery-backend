@@ -34,6 +34,14 @@ export const UserSignUp = asyncHandler(
 
         const { otp, otp_expiry } = GenerateOtp();
 
+        // check if user already exists
+        const existingUser = await User.findOne({ email: email });
+        if (existingUser) {
+            return res.status(BAD_REQUEST).json(
+                new ApiResponse(BAD_REQUEST, {}, "User already exists")
+            )
+        }
+
         const result = await User.create({
             email: email,
             password: userPassword,
@@ -70,7 +78,9 @@ export const UserSignUp = asyncHandler(
                     verified: result.verified,
                 }, "User Created",)
             )
+            return;
         }
+        res.status(BAD_REQUEST).json(new ApiResponse(BAD_REQUEST, {}, "User not created"))
     })
 
 export const UserSignIn = asyncHandler(

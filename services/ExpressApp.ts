@@ -1,6 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import { ErrorMiddleware } from "../middleware";
 import {
     AdminRoute,
     VandorRoute,
@@ -29,6 +30,7 @@ export default async (app: Application) => {
     app.use("/api/v1/vandor", VandorRoute);
     app.use("/api/v1/shopping", ShoppingRoute);
     app.use("/api/v1/user", UserRoutes)
+
     // Handle 404 errors
     app.use((req: Request, res: Response) => {
         res
@@ -41,7 +43,8 @@ export default async (app: Application) => {
                 )
             );
     });
-
+    // Error Middleware
+    app.use(ErrorMiddleware);
     // Global Error Handler
     app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
