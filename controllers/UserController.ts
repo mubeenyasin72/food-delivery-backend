@@ -93,7 +93,8 @@ export const UserVerify = asyncHandler(
         if (user) {
             const profile = await User.findById(user._id);
             if (profile) {
-                if (profile.otp === parseInt(otp) && profile.otp_expiry <= new Date()) {
+                console.log(profile.otp === parseInt(otp) && profile.otp_expiry >= new Date())
+                if (profile.otp === parseInt(otp) && profile.otp_expiry >= new Date()) {
                     profile.verified = true;
                     const updatedUserResponse = await profile.save();
 
@@ -111,11 +112,6 @@ export const UserVerify = asyncHandler(
                         }, "User Verified",)
                     )
                     return;
-                }
-                if (profile.otp !== parseInt(otp)) {
-                    return res.status(BAD_REQUEST).json(
-                        new ApiResponse(BAD_REQUEST, {}, "Invalid OTP")
-                    )
                 }
             }
         }
