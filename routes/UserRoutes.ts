@@ -7,6 +7,7 @@ import {
     GetUserProfile,
     UpdateUserProfile
 } from "../controllers";
+import { Authenticate } from "../middleware";
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ router.post("/signup", UserSignUp);
 router.post("/signin", UserSignIn);
 
 //Authentication Required
-
+router.use(Authenticate)
 // Verify User
 router.patch("/verify", UserVerify);
 

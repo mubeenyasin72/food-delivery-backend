@@ -87,7 +87,42 @@ export const UserSignIn = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => { })
 
 export const UserVerify = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => { })
+    async (req: Request, res: Response, next: NextFunction) => { 
+        const { otp } = req.body;
+        const user = req.user;
+        if (user) {
+            const profile = await User.findById(user._id);
+            if (profile) {
+                if (profile.otp === parseInt(otp) && profile.otp_expiry <= new Date()) {
+                    profile.verified = true;
+                    const updatedUserResponse = await profile.save();
+
+                    // genrate signature
+                    const signature = GenerateSignature({
+                        _id: updatedUserResponse.id,
+                        email: updatedUserResponse.email,
+                        verified: updatedUserResponse.verified,
+                    })
+                    res.status(OK).json(
+                        new ApiResponse(OK, {
+                            signature: signature,
+                            email: updatedUserResponse.email,
+                            verified: updatedUserResponse.verified,
+                        }, "User Verified",)
+                    )
+                    return;
+                }
+                if (profile.otp !== parseInt(otp)) {
+                    return res.status(BAD_REQUEST).json(
+                        new ApiResponse(BAD_REQUEST, {}, "Invalid OTP")
+                    )
+                }
+            }
+        }
+        res.status(BAD_REQUEST).json(
+            new ApiResponse(BAD_REQUEST, {}, "Error with OTP verification")
+        )
+    })
 
 export const RequestOPT = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => { })
