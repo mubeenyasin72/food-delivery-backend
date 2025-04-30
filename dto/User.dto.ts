@@ -1,6 +1,6 @@
 import { IsEmail, IsEmpty, Length } from "class-validator";
 
-export class CreateUserInput{
+export class CreateUserInput {
 
     @IsEmail()
     email: string;
@@ -11,7 +11,13 @@ export class CreateUserInput{
     @Length(8, 12)
     password: string;
 }
-export interface UserPayload{
+export class UserLoginInput {
+    @IsEmail()
+    email: string;
+    @Length(8, 12)
+    password: string;
+}
+export interface UserPayload {
     _id: string;
     email: string;
     verified: boolean;

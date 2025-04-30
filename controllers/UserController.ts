@@ -11,11 +11,12 @@ import {
     EncryptPassword,
     GenerateOtp,
     SendEmailOtp,
-    GenerateSignature
+    GenerateSignature,
+    ComparePassword
 } from "../utility";
 import { plainToClass } from "class-transformer"
 import { validate } from "class-validator";
-import { CreateUserInput } from "../dto";
+import { CreateUserInput, UserLoginInput } from "../dto";
 import { User } from "../models";
 
 
@@ -84,16 +85,45 @@ export const UserSignUp = asyncHandler(
     })
 
 export const UserSignIn = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => { })
+    async (req: Request, res: Response, next: NextFunction) => {
+        const loginInputs = plainToClass(UserLoginInput, req.body);
+        const loginError = await validate(loginInputs, { validationError: { target: true } })
+        if(loginError.length > 0) {
+            throw next(new ApiError(BAD_REQUEST, "Validation Error", loginError))
+        }
+        const { email, password } = loginInputs;
+        const user = await User.findOne({ email: email });
+        if (user) {
+            const isPasswordMatched = await ComparePassword(password, user.password, user.salt);
+            if (isPasswordMatched) {
+                // genrate signature
+                const signature = GenerateSignature({
+                    _id: user.id,
+                    email: user.email,
+                    verified: user.verified,
+                })
+                res.status(OK).json(
+                    new ApiResponse(OK, {
+                        signature: signature,
+                        email: user.email,
+                        verified: user.verified,
+                    }, "User SignIn",)
+                )
+                return;
+            }
+        }
+        res.status(BAD_REQUEST).json(
+            new ApiResponse(BAD_REQUEST, {}, "Error with SignIn")
+        )
+    })
 
 export const UserVerify = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => { 
+    async (req: Request, res: Response, next: NextFunction) => {
         const { otp } = req.body;
         const user = req.user;
         if (user) {
             const profile = await User.findById(user._id);
             if (profile) {
-                console.log(profile.otp === parseInt(otp) && profile.otp_expiry >= new Date())
                 if (profile.otp === parseInt(otp) && profile.otp_expiry >= new Date()) {
                     profile.verified = true;
                     const updatedUserResponse = await profile.save();
@@ -121,10 +151,16 @@ export const UserVerify = asyncHandler(
     })
 
 export const RequestOPT = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => { })
+    async (req: Request, res: Response, next: NextFunction) => {
+
+    })
 
 export const GetUserProfile = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => { })
+    async (req: Request, res: Response, next: NextFunction) => {
+
+    })
 
 export const UpdateUserProfile = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => { })
+    async (req: Request, res: Response, next: NextFunction) => {
+
+    })
