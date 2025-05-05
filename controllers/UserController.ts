@@ -20,6 +20,7 @@ import { CreateUserInput, UserLoginInput } from "../dto";
 import { User } from "../models";
 
 
+//User Signup
 export const UserSignUp = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
         const userInputs = plainToClass(CreateUserInput, req.body);
@@ -84,6 +85,7 @@ export const UserSignUp = asyncHandler(
         res.status(BAD_REQUEST).json(new ApiResponse(BAD_REQUEST, {}, "User not created"))
     })
 
+// User Login
 export const UserSignIn = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
         const loginInputs = plainToClass(UserLoginInput, req.body);
@@ -117,6 +119,7 @@ export const UserSignIn = asyncHandler(
         )
     })
 
+// User Verify
 export const UserVerify = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
         const { otp } = req.body;
