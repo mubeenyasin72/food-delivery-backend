@@ -155,7 +155,29 @@ export const UserVerify = asyncHandler(
 
 export const RequestOPT = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
-
+        const user = req.user;
+        if (user) {
+            const profile = await User.findById(user._id);
+            if (profile) {
+                const { otp, otp_expiry } = GenerateOtp();
+                profile.otp = otp;
+                profile.otp_expiry = otp_expiry;
+                await profile.save();
+                // send the opt to user
+                await SendEmailOtp(profile.email, "Verify your account", `
+                <h1>Verify your account</h1>
+                <p>Use the following OTP to verify your account</p>
+                <h2>${otp}</h2>
+                <p>OTP is valid for 30 minutes</p>
+                `)
+                res.status(OK).json(
+                    new ApiResponse(OK, {}, "OTP sent to your email")
+                )
+            }
+        }
+        res.status(BAD_REQUEST).json(
+            new ApiResponse(BAD_REQUEST, {}, "Error with OTP generation")
+        )
     })
 
 export const GetUserProfile = asyncHandler(
@@ -167,3 +189,4 @@ export const UpdateUserProfile = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
 
     })
+
