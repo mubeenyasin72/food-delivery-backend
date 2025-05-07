@@ -23,7 +23,7 @@ router.use(Authenticate)
 router.patch("/verify", UserVerify);
 
 // OPT / Requesting OPT
-router.get('/opt', RequestOPT)
+router.get('/otp', RequestOPT)
 
 // Profile
 router.get("/profile", GetUserProfile);

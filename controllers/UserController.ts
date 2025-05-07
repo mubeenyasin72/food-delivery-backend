@@ -173,13 +173,14 @@ export const RequestOPT = asyncHandler(
                 res.status(OK).json(
                     new ApiResponse(OK, {}, "OTP sent to your email")
                 )
+                return
             }
         }
         res.status(BAD_REQUEST).json(
             new ApiResponse(BAD_REQUEST, {}, "Error with OTP generation")
         )
     })
-
+//Get USer Profile
 export const GetUserProfile = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
 
