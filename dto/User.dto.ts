@@ -17,6 +17,15 @@ export class UserLoginInput {
     @Length(8, 12)
     password: string;
 }
+export class EditUserProfileInputs {
+    @Length(3, 16)
+    firstName: string;
+    @Length(3, 16)
+    lastName: string;
+    @Length(6, 16)
+    address: string;
+
+}
 export interface UserPayload {
     _id: string;
     email: string;
@@ -24,3 +33,4 @@ export interface UserPayload {
     // firstName: string;
     // lastName: string;
 }
+

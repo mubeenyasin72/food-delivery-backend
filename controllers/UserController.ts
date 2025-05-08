@@ -16,7 +16,7 @@ import {
 } from "../utility";
 import { plainToClass } from "class-transformer"
 import { validate } from "class-validator";
-import { CreateUserInput, UserLoginInput } from "../dto";
+import { CreateUserInput, EditUserProfileInputs, UserLoginInput } from "../dto";
 import { User } from "../models";
 
 
@@ -90,7 +90,7 @@ export const UserSignIn = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
         const loginInputs = plainToClass(UserLoginInput, req.body);
         const loginError = await validate(loginInputs, { validationError: { target: true } })
-        if(loginError.length > 0) {
+        if (loginError.length > 0) {
             throw next(new ApiError(BAD_REQUEST, "Validation Error", loginError))
         }
         const { email, password } = loginInputs;
@@ -188,6 +188,23 @@ export const GetUserProfile = asyncHandler(
 
 export const UpdateUserProfile = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
+        const user = req.user;
 
+        const profileInputs = plainToClass(EditUserProfileInputs, req.body);
+        const inputError = await validate(profileInputs, { validationError: { target: true } })
+        if (inputError.length > 0) {
+            throw next(new ApiError(BAD_REQUEST, "Validation Error", inputError))
+        }
+        const { firstName, lastName, address } = profileInputs;
+        if (user) {
+            const profile = await User.findById(user._id);
+            if (profile) {
+                profile.firstName = firstName;
+                profile.lastName = lastName;
+                profile.address = address;
+                const updatedUserResponse = await profile.save();
+                res.status(OK).json(new ApiResponse(OK, updatedUserResponse, "User Profile",))
+            }
+        }
     })
 
