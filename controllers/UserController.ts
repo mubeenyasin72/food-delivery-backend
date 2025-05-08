@@ -180,10 +180,21 @@ export const RequestOPT = asyncHandler(
             new ApiResponse(BAD_REQUEST, {}, "Error with OTP generation")
         )
     })
-//Get USer Profile
 export const GetUserProfile = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
-
+        const user = req.user;
+        if (user) {
+            const profile = await User.findById(user._id);
+            if (profile) {
+                res.status(OK).json(
+                    new ApiResponse(OK, profile, "User Profile",)
+                )
+                return;
+            }
+        }
+        res.status(NOT_FOUND).json(
+            new ApiResponse(NOT_FOUND, {}, "User not found")
+        )
     })
 
 export const UpdateUserProfile = asyncHandler(
