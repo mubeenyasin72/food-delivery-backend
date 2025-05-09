@@ -152,7 +152,7 @@ export const UserVerify = asyncHandler(
             new ApiResponse(BAD_REQUEST, {}, "Error with OTP verification")
         )
     })
-
+// Reques for otp
 export const RequestOPT = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
         const user = req.user;
@@ -180,6 +180,7 @@ export const RequestOPT = asyncHandler(
             new ApiResponse(BAD_REQUEST, {}, "Error with OTP generation")
         )
     })
+// get user profile
 export const GetUserProfile = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
         const user = req.user;
@@ -196,7 +197,7 @@ export const GetUserProfile = asyncHandler(
             new ApiResponse(NOT_FOUND, {}, "User not found")
         )
     })
-
+// Update user profile
 export const UpdateUserProfile = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
         const user = req.user;
